@@ -1,5 +1,5 @@
-import User, { UserDocument } from '../models/User';
-import { signToken } from '../services/auth';
+import User, { UserDocument } from '../models/User.js';
+import { signToken } from '../services/auth.js';
 
 const resolvers = {
   Query: {
