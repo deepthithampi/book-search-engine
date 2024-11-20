@@ -4,14 +4,22 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
 import { loginUser } from '../utils/API';
+
 import Auth from '../utils/auth';
+
 import type { User } from '../models/User';
 
+import { useMutation } from '@apollo/client';
+import { MUTATION_LOGIN } from '../utils/mutations';
+
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
-const LoginForm = ({}: { handleModalClose: () => void }) => {
-  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+const LoginForm = ({handleModalClose}: { handleModalClose: () => void }) => {
+  const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '', savedBooks: [] });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+  // GraphQL mutation for login
+  const [login] = useMutation(MUTATION_LOGIN);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -29,14 +37,17 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
     }
 
     try {
-      const response = await loginUser(userFormData);
+        const { data } = await login({
+        variables: { ...userFormData },
+      });
 
-      if (!response.ok) {
+      if (!data?.login) {
         throw new Error('something went wrong!');
       }
 
-      const { token } = await response.json();
+      const { token } = data.login;
       Auth.login(token);
+      handleModalClose();
     } catch (err) {
       console.error(err);
       setShowAlert(true);
