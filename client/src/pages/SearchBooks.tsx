@@ -72,24 +72,11 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await searchGoogleBooks(searchInput);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const { items } = await response.json();
-
-      const bookData = items.map((book: GoogleAPIBook) => ({
-        bookId: book.id,
-        authors: book.volumeInfo.authors || ['No author to display'],
-        title: book.volumeInfo.title,
-        description: book.volumeInfo.description,
-        image: book.volumeInfo.imageLinks?.thumbnail || '',
-      }));
-
-      setSearchedBooks(bookData);
-      setSearchInput('');
+      // Trigger the GraphQL query with search input
+      let searchdata = await searchBooks({ variables: { query: searchInput } });
+      console.log(searchdata.data.books);
+      setSearchedBooks(searchdata.data.books)
+      setSearchInput(''); // Clear the input field after submission
     } catch (err) {
       console.error(err);
     }
