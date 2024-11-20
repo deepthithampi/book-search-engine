@@ -18,14 +18,21 @@ const typeDefs = `
   type Query {
     getSingleUser(id: ID!): User
     getAllUsers: [User]
+    books(query: String!): [Book]
   }
 
   type Mutation {
-    createUser(username: String!, email: String!, password: String!): User
-    login(email: String!, password: String!): String
-    saveBook(userId: ID!, book: BookInput!): User
+    createUser(username: String!, email: String!, password: String!): AutoPayload
+    login(email: String!, password: String!): AutoPayload
+    saveBook( book: BookInput!): User
     deleteBook(userId: ID!, bookId: ID!): User
   }
+
+
+type AutoPayload {
+  token: String!
+  user: User
+}
 
   input BookInput {
     bookId: ID!
