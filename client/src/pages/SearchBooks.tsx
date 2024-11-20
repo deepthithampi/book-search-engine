@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLazyQuery,useMutation } from '@apollo/client';
 import type { FormEvent } from 'react';
 import {
   Container,
@@ -10,7 +11,12 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
+
 import { saveBook, searchGoogleBooks } from '../utils/API';
+
+import { QUERY_BOOKS } from '../utils/queries'; //GraphQl query for books
+import { MUTATION_SAVE_BOOK } from '../utils/mutations'; // GraphQL mutation for saving books
+
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import type { Book } from '../models/Book';
 import type { GoogleAPIBook } from '../models/GoogleAPIBook';
@@ -26,6 +32,33 @@ const SearchBooks = () => {
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
+  // useEffect(() => {
+  //   return () => saveBookIds(savedBookIds);
+  // });
+
+
+   // GraphQL: Lazy query to fetch books from Google API
+   const [searchBooks, {  data }] = useLazyQuery(QUERY_BOOKS, {
+    fetchPolicy: 'no-cache',
+  });
+  // GraphQL: Mutation to save a book
+  const [saveBook] = useMutation(MUTATION_SAVE_BOOK);
+
+    // Update state when GraphQL query data changes
+    useEffect(() => {
+      if (data?.searchBooks) {
+        const bookData = data.searchBooks.map((book: any) => ({
+          bookId: book.bookId,
+          authors: book.authors || ['No author to display'],
+          title: book.title,
+          description: book.description,
+          image: book.image || '',
+        }));
+        setSearchedBooks(bookData);
+      }
+    }, [data]);
+
+  // Save `savedBookIds` list to localStorage on component unmount
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
