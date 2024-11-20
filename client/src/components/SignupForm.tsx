@@ -2,18 +2,26 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+// import { createUser } from '../utils/API';
+
 import Auth from '../utils/auth';
-import type { User } from '../models/User';
+
+// import type { User } from '../models/User';
+
+import { useMutation } from '@apollo/client'; //Usemutation appolo client
+import { MUTATION_CREATE_USER } from '../utils/mutations';
 
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
-const SignupForm = ({}: { handleModalClose: () => void }) => {
+const SignupForm = ({handleModalClose}: { handleModalClose: () => void }) => {
   // set initial form state
-  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+  const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '', savedBooks: [] });
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+
+    // GraphQL mutation for creating a user
+    const [createUser] = useMutation(MUTATION_CREATE_USER);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -31,14 +39,17 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     }
 
     try {
-      const response = await createUser(userFormData);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+      const { data } = await createUser({
+        variables: { ...userFormData },
+      });
+      if (!data?.createUser) {
+        throw new Error('Something went wrong!');
       }
 
-      const { token } = await response.json();
+      const { token } = data.createUser;
       Auth.login(token);
+      handleModalClose();
+
     } catch (err) {
       console.error(err);
       setShowAlert(true);
