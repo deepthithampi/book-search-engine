@@ -3,9 +3,14 @@ import { signToken } from '../services/auth.js';
 
 const resolvers = {
   Query: {
-    getSingleUser: async (_parent: any, { _id, username }: { _id?: string; username?: string }): Promise<UserDocument | null> => {
-      const params = _id ? { _id } : username ? { username } : {};
-      return User.findOne(params);
+    getSingleUser: async (_parent: any, { id }: { id: string }): Promise<UserDocument | null> => {
+      console.log("Arguments received in getSingleUser:", { id });
+      
+      if (!id) {
+        throw new Error("User ID is required.");
+      }
+      
+      return User.findById(id);
     },
   },
   Mutation: {
