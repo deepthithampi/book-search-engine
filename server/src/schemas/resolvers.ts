@@ -1,16 +1,49 @@
 import User, { UserDocument } from '../models/User.js';
+import fetch from 'node-fetch';
 import { signToken } from '../services/auth.js';
-
+interface Book {
+  bookId: string;
+  title: string;
+  authors: string[];
+  description: string;
+  image: string;
+  link: string;
+}
 const resolvers = {
   Query: {
-    getSingleUser: async (_parent: any, { id }: { id: string }): Promise<UserDocument | null> => {
-      console.log("Arguments received in getSingleUser:", { id });
-      
-      if (!id) {
-        throw new Error("User ID is required.");
+    getSingleUser: async (_parent: any, { _id, username }: { _id?: string; username?: string }): Promise<UserDocument | null> => {
+      const params = _id ? { _id } : username ? { username } : {};
+      return User.findOne(params);
+    },
+    getAllUsers: async () => {
+      try {
+        const users = await User.find({}, 'username email savedBooks'); 
+        return users;
+      } catch (err) {
+        throw new Error('Failed to fetch users');
       }
-      
-      return User.findById(id);
+    },
+    books: async (_parent: unknown, { query }: { query: string }): Promise<Book[]> => {
+      try {
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+        const result = await response.json();
+
+        if (!result.items) {
+          throw new Error('No books found');
+        }
+
+        return result.items.map((item: any) => ({
+          bookId: item.id,
+          title: item.volumeInfo.title,
+          authors: item.volumeInfo.authors || [],
+          description: item.volumeInfo.description || 'No description available',
+          image: item.volumeInfo.imageLinks?.thumbnail || '',
+          link: item.volumeInfo.infoLink || '',
+        }));
+      } catch (error) {
+        console.error('Error fetching books:', error);
+        throw new Error('Failed to fetch books from Google Books API');
+      }
     },
   },
   Mutation: {
@@ -30,9 +63,12 @@ const resolvers = {
       const token = signToken(user.username, user.email, user._id);
       return { token, user };
     },
-    saveBook: async (_parent: any, { userId, book }: { userId: string; book: any }): Promise<UserDocument | null> => {
+    saveBook: async (_parent: any, {  book }: { book: any },context : any): Promise<UserDocument | null> => {
+      if (!context.user || !context.user._id) {
+        throw new Error("Authentication required. Please log in.");
+      }
       return User.findByIdAndUpdate(
-        userId,
+        context.user._id,
         { $addToSet: { savedBooks: book } },
         { new: true, runValidators: true }
       );
