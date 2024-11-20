@@ -12,14 +12,14 @@ import {
 
 import Auth from '../utils/auth';
 
-import { saveBook, searchGoogleBooks } from '../utils/API';
+// import { saveBook, searchGoogleBooks } from '../utils/API';
 
 import { QUERY_BOOKS } from '../utils/queries'; //GraphQl query for books
 import { MUTATION_SAVE_BOOK } from '../utils/mutations'; // GraphQL mutation for saving books
 
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import type { Book } from '../models/Book';
-import type { GoogleAPIBook } from '../models/GoogleAPIBook';
+// import type { GoogleAPIBook } from '../models/GoogleAPIBook';
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -93,7 +93,7 @@ const SearchBooks = () => {
  
   // Exclude `__typename` field
   const { __typename, ...bookInput } = bookToSave;
-  
+
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
