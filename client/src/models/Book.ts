@@ -5,4 +5,5 @@ export interface Book {
   image: string;
   link: string;
   title: string;
+  __typename?: string;
 }

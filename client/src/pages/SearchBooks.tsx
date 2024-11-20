@@ -86,7 +86,14 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId: string) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave: Book = searchedBooks.find((book) => book.bookId === bookId)!;
-
+    if (!bookToSave) {
+      console.error('Book not found');
+      return false;
+    }
+ 
+  // Exclude `__typename` field
+  const { __typename, ...bookInput } = bookToSave;
+  
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
@@ -95,10 +102,13 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await saveBook(bookToSave, token);
+            // Use GraphQL mutation to save the book
+      const { data } = await saveBook({
+        variables: { book: bookInput },
+      });
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+      if (!data?.saveBook) {
+        throw new Error('Something went wrong!');
       }
 
       // if book successfully saves to user's account, save book id to state
@@ -106,7 +116,7 @@ const SearchBooks = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }; //upto here
 
   return (
     <>
