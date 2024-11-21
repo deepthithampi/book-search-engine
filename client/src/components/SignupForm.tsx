@@ -19,7 +19,7 @@ const SignupForm = ({handleModalClose}: { handleModalClose: () => void }) => {
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
-
+  console.log('Submitted userFormData:', userFormData);
     // GraphQL mutation for creating a user
     const [createUser] = useMutation(MUTATION_CREATE_USER);
 

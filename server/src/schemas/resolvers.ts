@@ -11,9 +11,12 @@ interface Book {
 }
 const resolvers = {
   Query: {
-    getSingleUser: async (_parent: any, { _id, username }: { _id?: string; username?: string }): Promise<UserDocument | null> => {
-      const params = _id ? { _id } : username ? { username } : {};
-      return User.findOne(params);
+    // getSingleUser: async (_parent: any, { _id, username }: { _id?: string; username?: string }): Promise<UserDocument | null> => {
+    //   const params = _id ? { _id } : username ? { username } : {};
+    //   return User.findOne(params);
+    // },
+    getSingleUser: async (_parent: any, { id }: { id: string }): Promise<UserDocument | null> => {
+      return User.findById(id); // Use 'id' directly to fetch the user.
     },
     getAllUsers: async () => {
       try {
