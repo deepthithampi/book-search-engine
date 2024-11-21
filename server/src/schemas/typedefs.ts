@@ -22,9 +22,9 @@ const typeDefs = `
   }
 
   type Mutation {
-    createUser(username: String!, email: String!, password: String!): AutoPayload
+    createUser(username: String!, email: String!, password: String!,savedBooks: [BookInput]): AutoPayload
     login(email: String!, password: String!): AutoPayload
-    saveBook( book: BookInput!): User
+    saveBook(book: BookInput!): User
     deleteBook(userId: ID!, bookId: ID!): User
   }
 
