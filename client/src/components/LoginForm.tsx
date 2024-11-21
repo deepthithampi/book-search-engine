@@ -1,4 +1,4 @@
-// see SignupForm.js for comments
+
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
@@ -14,7 +14,7 @@ import { MUTATION_LOGIN } from '../utils/mutations';
 
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
 const LoginForm = ({handleModalClose}: { handleModalClose: () => void }) => {
-  const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '', savedBooks: [] });
+  const [userFormData, setUserFormData] = useState({email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -54,10 +54,8 @@ const LoginForm = ({handleModalClose}: { handleModalClose: () => void }) => {
     }
 
     setUserFormData({
-      username: '',
       email: '',
       password: '',
-      savedBooks: [],
     });
   };
 

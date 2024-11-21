@@ -28,7 +28,7 @@ console.log('Extracted userId:', userId);
 const { data, loading, error } = useQuery(QUERY_SINGLE_USER, {
   variables: { id: userId },
   skip: !userId,
-  // fetchPolicy: 'no-cache',
+  fetchPolicy: 'no-cache',
   // context: {
   //   headers: {
   //     Authorization: `Bearer ${Auth.getToken()}`,
