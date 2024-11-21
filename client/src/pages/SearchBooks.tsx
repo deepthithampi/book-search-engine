@@ -16,7 +16,7 @@ import Auth from '../utils/auth';
 
 import { QUERY_BOOKS } from '../utils/queries'; //GraphQl query for books
 import { MUTATION_SAVE_BOOK } from '../utils/mutations'; // GraphQL mutation for saving books
-
+import { QUERY_SINGLE_USER } from '../utils/queries';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import type { Book } from '../models/Book';
 // import type { GoogleAPIBook } from '../models/GoogleAPIBook';
@@ -105,6 +105,7 @@ const SearchBooks = () => {
             // Use GraphQL mutation to save the book
       const { data } = await saveBook({
         variables: { book: bookInput },
+        refetchQueries: [{ query: QUERY_SINGLE_USER, variables: { id: Auth.getProfile()?.data?._id } }],
       });
 
       if (!data?.saveBook) {
