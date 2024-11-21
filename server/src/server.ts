@@ -37,10 +37,10 @@ const startApolloServer = async () => {
     // Add debugging
    console.log('Current directory:', __dirname);
     app.use(express.static(path.join(__dirname, '../client/dist')));
-    console.log('Client Path:', path.join(__dirname, '../../client/dist'));
+    console.log('Client Path:', path.join(__dirname, '../client/dist'));
     
     app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(__dirname,'../../client/dist/index.html'));
+      res.sendFile(path.join(__dirname,'../client/dist/index.html'));
     });
   }
 
