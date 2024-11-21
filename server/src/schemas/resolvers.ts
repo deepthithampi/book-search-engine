@@ -1,6 +1,7 @@
 import User, { UserDocument } from '../models/User.js';
 import fetch from 'node-fetch';
 import { signToken } from '../services/auth.js';
+
 interface Book {
   bookId: string;
   title: string;
@@ -9,6 +10,7 @@ interface Book {
   image: string;
   link: string;
 }
+
 const resolvers = {
   Query: {
     // getSingleUser: async (_parent: any, { _id, username }: { _id?: string; username?: string }): Promise<UserDocument | null> => {
@@ -50,10 +52,15 @@ const resolvers = {
     },
   },
   Mutation: {
-    createUser: async (_parent: any, { username, email, password }: { username: string; email: string; password: string }): Promise<{ token: string; user: UserDocument } | null> => {
-      const user = await User.create({ username, email, password });
+    createUser: async (_parent: any, { username, email, password,savedBooks }: { username: string; email: string; password: string; savedBooks:[Book]}) => {
+      console.log('Creating user:', { username, email ,savedBooks});
+      const user = await User.create({ username, email, password ,savedBooks: savedBooks||[]});
       if (!user) throw new Error('Error creating user');
+
       const token = signToken(user.username, user.email, user._id);
+       // Log the output payload
+      console.log('User created successfully:', { user, token });
+      
       return { token, user };
     },
     login: async (_parent: any, { username, email, password }: { username?: string; email?: string; password: string }): Promise<{ token: string; user: UserDocument } | null> => {
@@ -66,6 +73,7 @@ const resolvers = {
       const token = signToken(user.username, user.email, user._id);
       return { token, user };
     },
+  
     saveBook: async (_parent: any, {  book }: { book: any },context : any): Promise<UserDocument | null> => {
       if (!context.user || !context.user._id) {
         throw new Error("Authentication required. Please log in.");

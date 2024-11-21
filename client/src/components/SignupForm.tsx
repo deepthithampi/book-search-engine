@@ -14,7 +14,7 @@ import { MUTATION_CREATE_USER } from '../utils/mutations';
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
 const SignupForm = ({handleModalClose}: { handleModalClose: () => void }) => {
   // set initial form state
-  const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '', savedBooks: [] });
+  const [userFormData, setUserFormData] = useState({ username: '', email: '', password: ''});
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
@@ -22,6 +22,7 @@ const SignupForm = ({handleModalClose}: { handleModalClose: () => void }) => {
   console.log('Submitted userFormData:', userFormData);
     // GraphQL mutation for creating a user
     const [createUser] = useMutation(MUTATION_CREATE_USER);
+    console.log('User form data being sent:', userFormData);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -59,7 +60,7 @@ const SignupForm = ({handleModalClose}: { handleModalClose: () => void }) => {
       username: '',
       email: '',
       password: '',
-      savedBooks: [],
+      // savedBooks: [],
     });
   };
 
