@@ -14,21 +14,5 @@ export default defineConfig({
         changeOrigin: true
       }
     }
-  },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    // Ensure the build is compatible with the server setup
-    emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined
-      }
-    }
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src')
-    }
   }
 })
