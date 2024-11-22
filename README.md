@@ -10,6 +10,7 @@ This is a full-stack web application that allows users to search for books, save
 - [Contributing](#contributing)
 - [Tests](#tests)
 - [Questions](#questions)
+- [Screenshot](#screenshot)
 - [DeployedLink](#deployedlink)
     
 ## Installation
@@ -34,6 +35,11 @@ Currently, there are no tests available for this project.
 ## Questions
 For any questions, please feel free to contact me at deepthi_thampi@hotmail. 
 You can also find more of my work at [deepthithampi](https://github.com/deepthithampi).
+
+## Screenshot
+![Screenshot of the application](./client/src/assets/img2.png "Application Screenshot")
+![Screenshot of the application](./client/src/assets/img1.png "Application Screenshot")
+![Screenshot of the application](./client/src/assets/img3.png "Application Screenshot")
 
 ## DeployedLink
 
